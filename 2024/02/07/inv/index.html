@@ -15,7 +15,7 @@
 
 
 
-<title>Acwing 4968 互质数的个数 (欧拉函数) | Nephrenn&#39;s Blog</title>
+<title>乘法逆元 | Nephrenn&#39;s Blog</title>
 
 
 
@@ -326,7 +326,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Acwing 4968 互质数的个数 (欧拉函数)</h1>
+            <h1 class="post-title">乘法逆元</h1>
             
                 <div class="post-meta">
                     
@@ -335,7 +335,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">一月 20, 2024&nbsp;&nbsp;20:45:00</a>
+                        Date: <a href="#">二月 7, 2024&nbsp;&nbsp;3:03:00</a>
                         </span>
                     
                     
@@ -351,14 +351,30 @@
         </header>
 
         <div class="post-content">
-            <h1 id="Acwing-4968-互质数的个数"><a href="#Acwing-4968-互质数的个数" class="headerlink" title="Acwing 4968 互质数的个数"></a>Acwing 4968 互质数的个数</h1><p><a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/4971/">https://www.acwing.com/problem/content/4971/</a></p>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>求出 $[1,a^b)$ 中与 $a^b$ 互质的数的个数</p>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>欧拉函数板子。</p>
-<p>定义 $\varphi(n)$ 为 $[1,n]$ 中与 $n$ 互质的数的个数。对于 $n =p_{1}^{k_1} p_{2}^{k_2}…p_{r}^{k_r}$，</p>
-<script type="math/tex; mode=display">\begin{align*}\varphi(n) &= \varphi(\prod_{i=1}^{r}p_{i}^{k_i}) \\ &= \prod_{i=1}^{r}\varphi(p_{i}^{k_i}) \\ &= \prod_{i=1}^{r}(p_{i}^{k_i } - p_{i}^{k_{i}-1}) \\ &= n\prod_{i=1}^{r}(1-\dfrac{1}{p_i})\end{align*}</script><p>于是对 $a$ 质因数分解，本题答案为 $a^b \prod_{i=1}^{r}\dfrac{p_i-1}{p_i} \bmod 998244353$。</p>
-<p>对于后面分式的处理，当 $a$ 为 $998244353$ 的倍数时，乘法逆元失效，因此需要特判。不考虑逆元，注意到 $p_i | a$，原式变形为 $a^{b - 1}\cdot(\dfrac{a}{\prod_{i=1}^{r}p_i}\cdot\prod_{i=1}^{r}(p_i-1))$，即可直接计算。</p>
-<p>对于 $a = 1$ 的情况需要特判。</p>
-<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MOD = <span class="number">998244353</span>;</span><br><span class="line">ll a, b, ans, t;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">quick_power</span><span class="params">(ll a, ll b, ll p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ll res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(b)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(b &amp; <span class="number">1</span>) res = (res * a) % p;</span><br><span class="line">        a = a * a % p;</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">fast_io</span><span class="params">()</span> </span>&#123;ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>); cin.<span class="built_in">tie</span>(<span class="number">0</span>); cout.<span class="built_in">tie</span>(<span class="number">0</span>);&#125;</span><br><span class="line"><span class="function"><span class="type">signed</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">fast_io</span>();</span><br><span class="line">    cin &gt;&gt; a &gt;&gt; b;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(a == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ans = a, t = a;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">2</span>; i * i &lt;= t; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(t % i == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">while</span>(t % i == <span class="number">0</span>) t /= i;</span><br><span class="line">            ans = ans / i * (i - <span class="number">1</span>) % MOD;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(t &gt; <span class="number">1</span>) ans = ans / t * (t - <span class="number">1</span>) % MOD;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="built_in">quick_power</span>(a, b - <span class="number">1</span>, MOD) * ans % MOD;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <h1 id="乘法逆元"><a href="#乘法逆元" class="headerlink" title="乘法逆元"></a>乘法逆元</h1><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>求解线性同余方程</p>
+<script type="math/tex; mode=display">
+ax\equiv 1\pmod b</script><h2 id="解法1-扩展欧几里得"><a href="#解法1-扩展欧几里得" class="headerlink" title="解法1 扩展欧几里得"></a>解法1 扩展欧几里得</h2><h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>原方程等价于</p>
+<script type="math/tex; mode=display">
+ax+by=1</script><p>当 $a,b$ <strong>互质</strong>时，$ax+by=1=\gcd(a,b)$，因此可以使用扩展欧几里得求解</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">exgcd</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> &amp;x, <span class="type">int</span> &amp;y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(b == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        x = <span class="number">1</span>, y = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="built_in">exgcd</span>(b, a % b, x, y);</span><br><span class="line">    <span class="type">int</span> tx = x;</span><br><span class="line">    x = y;</span><br><span class="line">    y = tx - a / b * y;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">inv</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> x, y;</span><br><span class="line">    <span class="built_in">exgcd</span>(a, b, x, y);</span><br><span class="line">    <span class="keyword">return</span> (x % b + b) % b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="解法2-费马小定理"><a href="#解法2-费马小定理" class="headerlink" title="解法2 费马小定理"></a>解法2 费马小定理</h2><h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><blockquote>
+<p><strong>费马小定理</strong> 若 $p$ 为素数，$\gcd(a,p) = 1$，则 $a^{p-1} \equiv 1 \pmod p$</p>
+</blockquote>
+<p>根据费马小定理，当 $b$ 为素数且 $a,b$ 互质时，有</p>
+<script type="math/tex; mode=display">
+a\cdot a^{b-2}=a^{b-1}\equiv 1\pmod b</script><p>因此 $x=a^{b-2}$</p>
+<h3 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">quick_power</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b, <span class="type">int</span> p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(b)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(b &amp; <span class="number">1</span>) res = res * a % p;</span><br><span class="line">        a = a * a % p;</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">inv</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">quick_power</span>(a, b - <span class="number">2</span>, b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="解法3-线性求逆元"><a href="#解法3-线性求逆元" class="headerlink" title="解法3 线性求逆元"></a>解法3 线性求逆元</h2><h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><p>首先，$1^{-1}\equiv 1 \pmod p$</p>
+<p>其次，对于 $i^{-1}$，令 $k=\lfloor\dfrac{p}{i}\rfloor$，$j = p \bmod i$，则 $p = ki + j$，在 $\mod p$ 意义下有：</p>
+<script type="math/tex; mode=display">
+ki+j\equiv 0 \pmod p</script><p>两边同时乘 $i^{-1}\times j^{-1}$ 并移项：</p>
+<script type="math/tex; mode=display">
+i^{-1}\equiv -kj^{-1} \pmod p</script><p>即</p>
+<script type="math/tex; mode=display">
+i^{-1} \equiv -\lfloor\dfrac{p}{i}\rfloor (p\bmod i)^{-1} \pmod p</script><p>因为 $p\bmod i &lt; i$，所以我们可以线性递推求逆元</p>
+<h3 id="代码-2"><a href="#代码-2" class="headerlink" title="代码"></a>代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> f[MAXN];</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">inv</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    f[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">2</span>; i &lt;= a; ++i)</span><br><span class="line">    	f[i] = (b - b / i) * f[b % i] % b;</span><br><span class="line">    <span class="keyword">return</span> f[a];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="习题"><a href="#习题" class="headerlink" title="习题"></a>习题</h2><p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1082">LuoguP1082 [NOIP2012 提高组] 同余方程</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3811">LuoguP3811 【模板】模意义下的乘法逆元</a></p>
 
         </div>
 
@@ -373,7 +389,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="https://nephrenn.github.io/2024/01/20/Acwing4968/">https://nephrenn.github.io/2024/01/20/Acwing4968/</a></span>
+                        <span><a href="https://nephrenn.github.io/2024/02/07/inv/">https://nephrenn.github.io/2024/02/07/inv/</a></span>
                     </p>
                 
                 
@@ -394,9 +410,11 @@
                     
                         <a href="/tags/%E6%95%B0%E8%AE%BA/"># 数论</a>
                     
-                        <a href="/tags/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0/"># 欧拉函数</a>
+                        <a href="/tags/%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97/"># 扩展欧几里得</a>
                     
-                        <a href="/tags/%E5%BF%AB%E9%80%9F%E5%B9%82/"># 快速幂</a>
+                        <a href="/tags/%E8%B4%B9%E9%A9%AC%E5%B0%8F%E5%AE%9A%E7%90%86/"># 费马小定理</a>
+                    
+                        <a href="/tags/%E4%B9%98%E6%B3%95%E9%80%86%E5%85%83/"># 乘法逆元</a>
                     
                         
                 </span>
@@ -409,10 +427,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2024/02/07/inv/">乘法逆元</a>
             
-            
-            <a class="next" rel="next" href="/2024/01/20/CF1921F/">CF1921F Sum of Progression (根号分治)</a>
+            <a class="next" rel="next" href="/2024/01/20/Acwing4968/">Acwing 4968 互质数的个数 (欧拉函数)</a>
             
         </section>
 
