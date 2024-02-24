@@ -352,11 +352,37 @@
 
         <div class="post-content">
             <h1 id="卷积"><a href="#卷积" class="headerlink" title="卷积"></a>卷积</h1><p>给出一个 $n - 1$ 次多项式 $F(x)$ 和一个 $m - 1$ 次多项式 $G(x)$，求 $(F\cdot G)(x)$</p>
-<h2 id="FFT"><a href="#FFT" class="headerlink" title="FFT"></a>FFT</h2><h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><ul>
-<li>欧拉公式：$\mathrm{e}^{\mathrm{i}x} = \cos x + \mathrm{i}\sin x$ </li>
-<li>$n$ 次单位根 $\omega_n$：$n$ 次幂为 $1$ 的复数。本文取 $\omega_{n} = \mathrm{e}^{\frac{2\pi \mathrm{i}}{n}}$ </li>
+<h2 id="FFT-amp-IFFT"><a href="#FFT-amp-IFFT" class="headerlink" title="FFT &amp; IFFT"></a>FFT &amp; IFFT</h2><p>下面考虑一个 $n-1$ 次多项式 $f(x) = \sum_{i=0}^{n-1}a_ix^i$</p>
+<h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><h4 id="点值表示法"><a href="#点值表示法" class="headerlink" title="点值表示法"></a>点值表示法</h4><p>$n$ 个互不相同的 $(x_i, f(x_i))$ 可以确定 $f(x)$</p>
+<h4 id="单位根"><a href="#单位根" class="headerlink" title="单位根"></a>单位根</h4><p>定义单位根为方程 $x^n=1$ 在复数域下的根，根据代数基本定理，这样的根有 $n$ 个。记其中一个根为 $\omega_n = \mathrm{e}^{\frac{2\pi\mathrm{i}}{n}}$，$\omega_n$ 具有很多良好的性质。</p>
+<ul>
+<li>$\omega_n^0 = \omega_n^n = 1$</li>
+<li>$\omega_n^k=\omega_{2n}^{2k}$</li>
+<li>$\omega_{2n}^{k + n} = -\omega_{2n}^{k}$</li>
 </ul>
-<h3 id=""><a href="#" class="headerlink" title=" "></a> </h3>
+<p>证明由欧拉公式和复数乘法的几何意义是显然的。</p>
+<h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h3><p>此处默认 $n$ 为 $2$ 的幂，否则令 $n$ 等于第一个大于等于 $n$ 的 $2$ 的幂，并补全项数（系数为 $0$），令 $m = \frac{n}{2}$。目标是将 $f(x)$ 由系数表示法转换为点值表示法。</p>
+<p>将 $f(x)$ 按次数的奇偶性分类：</p>
+<script type="math/tex; mode=display">
+f(x) = \sum_{i = 0}^{m - 1} a_{2i}x^{2i} + \sum_{i=0}^{m-1}a_{2i + 1}x^{2i+1}</script><p>记 $f_1(x) = \sum_{i = 0}^{m - 1} a_{2i}x$，$f_2(x) = \sum_{i=0}^{m-1}a_{2i + 1}x$，那么：</p>
+<script type="math/tex; mode=display">
+f(x) = f_1(x^2)+x\cdot f_2(x^2)</script><p>将 $\omega_n^k$ 和 $\omega_n^{k + \frac{n}{2}}$ $(0\leq k &lt; \frac{n}{2})$ 代入 $f(x)$：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+f(\omega_n^k) &= f_1(\omega_n^{2k})+\omega_n^k\cdot f_2(\omega_n^{2k}) \\
+&=f_1(\omega_{\frac{n}{2}}^k)+\omega_n^k\cdot f_2(\omega_{\frac{n}{2}}^k)
+\end{align}</script><script type="math/tex; mode=display">
+\begin{align}
+f(\omega_n^{k+\frac{n}{2}}) &= f(-\omega_n^k)\\
+&=f_1(\omega_{\frac{n}{2}}^k)-\omega_n^k \cdot f_2(\omega_{\frac{n}{2}}^k)
+\end{align}</script><p>所以我们只要计算出了 $f_1(\omega_{\frac{n}{2}}^k)$ 和 $f_2(\omega_{\frac{n}{2}}^k)$ 的值后，就可以 $O(1)$ 计算出 $f(\omega_n^k)$ 和 $f(\omega_n^{k + \frac{n}{2}})$ 的值，这启示我们可以递归计算，这样我们就得到了一个 $O(n\log n)$ 的，将系数表示法转换为点值表示法的算法。</p>
+<p>回到原问题，我们分别对 $F(x)$ 和 $G(x)$ 进行 FFT，再 $O(n)$ 计算 $F(\omega_n^i) \cdot G(\omega_n^i)$，就可以得到 $(F\cdot G)(x)$ 的点值表示法。现在的问题是要把 $(F\cdot G)(x)$ 的点值表示法再转换回系数表示法。</p>
+<p>继续考虑 $f(x)$，设 $b_i = f(\omega_n^i)$，即我们 FFT 后得到的点值，下面不加证明地给出结论</p>
+<script type="math/tex; mode=display">
+a_k=\frac{1}{n}\sum_{i=0}^{n-1}b_i\omega_n^{-ki}</script><p>根据 $\omega_n^{-k}=\omega_n^{k+n}$，我们只需要使用 FFT 的方法对 $(F\cdot G)(x)$ 的点值进行计算，然后将数组反过来就得到了各次项系数了。</p>
+<p>总复杂度为 $O(n\log n)$。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">FFT</span><span class="params">(complex&lt;<span class="type">double</span>&gt; *a, <span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(n == <span class="number">1</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> m = n &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    complex&lt;<span class="type">double</span>&gt; a0[m], a1[m];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; m; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        a0[i] = a[i &lt;&lt; <span class="number">1</span>];</span><br><span class="line">        a1[i] = a[i &lt;&lt; <span class="number">1</span> | <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">FFT</span>(a0, m);</span><br><span class="line">    <span class="built_in">FFT</span>(a1, m);</span><br><span class="line"></span><br><span class="line">    complex&lt;<span class="type">double</span>&gt; wn = <span class="built_in">complex</span>&lt;<span class="type">double</span>&gt;(<span class="built_in">cos</span>(<span class="number">2.0</span> * PI / n), <span class="built_in">sin</span>(<span class="number">2.0</span> * PI / n));</span><br><span class="line">    complex&lt;<span class="type">double</span>&gt; w = <span class="built_in">complex</span>&lt;<span class="type">double</span>&gt;(<span class="number">1.0</span>, <span class="number">0.0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; m; ++i)</span><br><span class="line">    &#123;</span><br><span class="line">        a[i] = a0[i] + w * a1[i];</span><br><span class="line">        a[i + m] = a0[i] - w * a1[i];</span><br><span class="line">        w = w * wn;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">IFFT</span><span class="params">(complex&lt;<span class="type">double</span>&gt; *a, <span class="type">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">FFT</span>(a, n);</span><br><span class="line">    <span class="built_in">reverse</span>(a + <span class="number">1</span>, a + n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
         </div>
 
         
