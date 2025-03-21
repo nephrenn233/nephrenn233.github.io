@@ -67,14 +67,21 @@
 
   
   <url>
-    <loc>https://nephrenn.github.io/categories/XCPC-notes/</loc>
+    <loc>https://nephrenn.github.io/categories/XCPC-note2/</loc>
     <lastmod>2025-03-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://nephrenn.github.io/categories/XCPC-note2/</loc>
+    <loc>https://nephrenn.github.io/categories/A/</loc>
+    <lastmod>2025-03-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://nephrenn.github.io/categories/A/B/</loc>
     <lastmod>2025-03-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
